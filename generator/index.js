@@ -1,4 +1,4 @@
-var re = new RegExp("\\[([A-Z][a-z]*)\\]");
+var re = new RegExp("\\[([A-Z]+)\\]");
 
 function Generator( model , opts ){
   this.model = model;

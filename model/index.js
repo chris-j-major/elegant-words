@@ -5,10 +5,10 @@ function Model(){
 }
 Model.prototype.loadJSON = function(j){
   for ( var n in j ){
-    this.addArray( n , j[n] );
+    this.addKeySet( n , j[n] );
   }
 }
-Model.prototype.addArray = function(key,array){
+Model.prototype.addKeySet = function(key,array){
   var opts = this.details[key];
   if ( ! opts ){
     // missing opts
@@ -16,15 +16,28 @@ Model.prototype.addArray = function(key,array){
     this.keys.push(key);
   }else{
     // already exists
-    opts.splice(0,0,array);
+    this.details[key] = opts.concat(array);
   }
+}
+Model.prototype.extend = function(key,f){
+  if ( this.details[key] ){
+    throw "Unable to extend ["+key+"] as it already exists."
+  }
+  this.details[key] = f;
+  this.keys.push(key);
 }
 Model.prototype.fetch = function(key){
   var options = this.details[key];
   if ( ! options ) return false;
-  var n = this.random();
-  var index = Math.floor(n * options.length);
-  return options[index];
+  if ( typeof options == 'function' ){
+    // function - execute it.
+    return options();
+  }else{
+    // assume array
+    var n = this.random();
+    var index = Math.floor(n * options.length);
+    return options[index];
+  }
 }
 
 module.exports = Model;
