@@ -1,0 +1,19 @@
+{
+  "name": "unique-words",
+  "version": "0.0.0",
+  "description": "Generate procedural text",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/chris-j-major/unique-words.git"
+  },
+  "author": "Chris Major",
+  "license": "MIT",
+  "dependencies": {
+    "minimist": "^1.2.0",
+    "random-seed": "^0.3.0"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "S":[
+    "Hello [N]",
+    "World [N] [N] [K]"
+  ],
+  "N":[
+    "Chris","James","Dave"
+  ]
+}
