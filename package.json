@@ -1,6 +1,6 @@
 {
-  "name": "unique-words",
-  "version": "0.0.0",
+  "name": "elegant-words",
+  "version": "0.0.1",
   "description": "Generate procedural text",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/chris-j-major/unique-words.git"
+    "url": "git://github.com/chris-j-major/elegant-words.git"
   },
   "author": "Chris Major",
   "license": "MIT",
