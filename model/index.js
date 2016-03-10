@@ -1,7 +1,6 @@
 function Model(){
   this.keys = [];
   this.details = {};
-  this.random = Math.random;
 }
 Model.prototype.loadJSON = function(j){
   for ( var n in j ){
@@ -26,7 +25,7 @@ Model.prototype.extend = function(key,f){
   this.details[key] = f;
   this.keys.push(key);
 }
-Model.prototype.fetch = function(key){
+Model.prototype.fetch = function(key,random){
   var options = this.details[key];
   if ( ! options ) return false;
   if ( typeof options == 'function' ){
@@ -34,7 +33,7 @@ Model.prototype.fetch = function(key){
     return options();
   }else{
     // assume array
-    var n = this.random();
+    var n = random();
     var index = Math.floor(n * options.length);
     return options[index];
   }

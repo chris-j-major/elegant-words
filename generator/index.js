@@ -3,6 +3,7 @@ var re = new RegExp("\\[([A-Za-z]+)([0-9]+)?\\]");
 function Generator( model , opts ){
   this.model = model;
   this.opts = opts;
+  this.random = opts.random || Math.random;
   this.string = null;
 }
 Generator.prototype.generate = function( s ){
@@ -23,7 +24,7 @@ Generator.prototype.generate = function( s ){
         n = backrefs[backref];
       }else{
         key = m[1].toUpperCase();
-        n = this.model.fetch(key);
+        n = this.model.fetch(key,this.random );
         // now we fetch recursivly
         if ( ! n ){
           n = "{"+m[1]+"}";
