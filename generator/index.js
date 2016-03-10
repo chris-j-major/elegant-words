@@ -1,4 +1,4 @@
-var re = new RegExp("\\[([A-Z]+)([0-9]+)?\\]");
+var re = new RegExp("\\[([A-Za-z]+)([0-9]+)?\\]");
 
 function Generator( model , opts ){
   this.model = model;
@@ -22,12 +22,14 @@ Generator.prototype.generate = function( s ){
       if ( backref && backrefs[backref] ){
         n = backrefs[backref];
       }else{
-        n = this.model.fetch(m[1]);
+        key = m[1].toUpperCase();
+        n = this.model.fetch(key);
         // now we fetch recursivly
         if ( ! n ){
           n = "{"+m[1]+"}";
         }else{
           n = this.generate(n); // we generate recursivly, just to speed things up
+          n = matchFirstCase( m[1] , n );
         }
         if ( backref ){
           backrefs[backref] = n;
@@ -47,6 +49,25 @@ Generator.prototype.toString = function(){
     this.string = this.generate();
   }
   return this.string;
+}
+
+function matchFirstCase( targetCase , source ){
+  var firstUpper = isUpperCase( targetCase[0] );
+  if ( firstUpper != isUpperCase(source[0]) ){
+    var n;
+    if ( firstUpper ){
+      n = source[0].toUpperCase();
+    }else{
+      n = source[0].toLowerCase();
+    }
+    return n + source.substring(1);
+  }else{
+    return source;
+  }
+}
+
+function isUpperCase(c){
+  return c == c.toUpperCase();
 }
 
 module.exports = Generator;

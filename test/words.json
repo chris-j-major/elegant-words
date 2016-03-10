@@ -1,9 +1,19 @@
 {
   "S":[
-    "Hello [N]",
-    "World [N] [N] [K]"
+    "[Greeting] [Name], Welcome to [Place]",
+    "[Name] [greeting] - [place]"
   ],
-  "N":[
+  "GREETING":[
+    "Hello",
+    "Good morning",
+    "Good afternoon",
+    "Good night"
+  ],
+  "NAME":[
     "Chris","James","Dave"
+  ],
+  "PLACE":[
+    "Nightvale",
+    "Halcyon tower"
   ]
 }
