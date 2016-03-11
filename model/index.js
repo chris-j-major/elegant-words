@@ -30,13 +30,17 @@ Model.prototype.fetch = function(key,random){
   if ( ! options ) return false;
   if ( typeof options == 'function' ){
     // function - execute it.
-    return options();
-  }else{
-    // assume array
-    var n = random();
-    var index = Math.floor(n * options.length);
-    return options[index];
+    var n = options();
+    if ( !n.push ){
+       return n;
+    }else{
+      options = n; // use this array...
+    }
   }
+  // assume array
+  var n = random();
+  var index = Math.floor(n * options.length);
+  return options[index];
 }
 
 module.exports = Model;

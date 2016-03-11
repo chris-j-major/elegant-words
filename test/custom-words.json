@@ -1,7 +1,7 @@
 {
   "S":[
-    "Today is [NOW]",
-    "It's [NOW] today",
-    "The time is [NOW]"
+    "Today is [NOW] ([DAY])",
+    "It's [NOW] today [day]",
+    "The [day]time is [NOW]"
   ]
 }
