@@ -25,22 +25,17 @@ Model.prototype.extend = function(key,f){
   this.details[key] = f;
   this.keys.push(key);
 }
-Model.prototype.fetch = function(key,random){
+Model.prototype.fetch = function(key){
   var options = this.details[key];
   if ( ! options ) return false;
   if ( typeof options == 'function' ){
     // function - execute it.
-    var n = options();
-    if ( !n.push ){
-       return n;
-    }else{
-      options = n; // use this array...
-    }
+    options = options();
+  }else if ( options.push ){
+    return options;
+  }else{
+    return [options]; // convert to array
   }
-  // assume array
-  var n = random();
-  var index = Math.floor(n * options.length);
-  return options[index];
 }
 
 module.exports = Model;

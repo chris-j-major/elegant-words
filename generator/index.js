@@ -5,51 +5,85 @@ function Generator( model , opts ){
   this.opts = opts||{};
   this.random = this.opts.random || Math.random;
   this.string = null;
+  this.warn = this.opts.warn || console.log;
 }
-Generator.prototype.generate = function( s ){
-  s = s || "[S]";
-  var backrefs = {};
+Generator.prototype.toString = function( s ){
+  var i = new Instance(this, s||"S" );
+  return i.toString();
+}
+
+function Instance(gen,s){
+  this.gen = gen;
+  this.model = gen.model;
+  this.random = gen.random;
+  this.warn = gen.warn;
+  this.s = s;
+  this.backrefs = {};
+}
+Instance.prototype.solve = function(k,trace){
+  var key = k.toUpperCase();
+  var n = this.model.fetch(key,this.random );
+  // n is the array of possible solutions.
+  if ( n.length == 0 ){
+    this.warn("Unable to find any options for "+key+"   ["+trace+"]")
+    return null;
+  }else{
+    // try solutions
+    var offset = Math.floor(this.random() * n.length);
+    for ( var i=0 ; i< n.length ; i++){
+      var index = (i+offset) % n.length;
+      var s = this.unpack(n[index],trace+"->"+key+"("+index+")");
+      if ( s != null ) return s; // found a solution...
+    }
+    this.warn("Unable to find any VALID options for "+key+"   ["+trace+"]")
+    return null;
+  }
+};
+Instance.prototype.unpack = function( s , trace ){
   var done = false;
+  var backrefId;
+  var n;
+  var key;
   while( !done ){
     var m = re.exec(s);
     if ( m ){
       var len = m[0].length;
-      var backref = false;
-      var n = null;
+      n = null;
+      backrefId = null;
       if ( m[2] ){
         // backref
-        backref = parseInt(m[2]);
+        backrefId = parseInt(m[2]);
+        if ( this.backrefs[backrefId] ){ // exists - shortcut exit
+          n = this.backrefs[backrefId];
+        }
       }
-      if ( backref && backrefs[backref] ){
-        n = backrefs[backref];
-      }else{
+      if ( !n ){
         key = m[1].toUpperCase();
-        n = this.model.fetch(key,this.random );
-        // now we fetch recursivly
-        if ( ! n ){
-          n = "{"+m[1]+"}";
-        }else{
-          n = this.generate(n); // we generate recursivly, just to speed things up
-          n = matchFirstCase( m[1] , n );
-        }
-        if ( backref ){
-          backrefs[backref] = n;
-        }
+        n = this.solve(key,trace);
       }
-      var pre = s.substring(0,m.index);
-      var post = s.substring(m.index+len);
-      s = pre+n+post;
+      if ( n ){
+        if ( backrefId){ // remeber it
+          this.backrefs[backrefId] = n;
+        }
+        n = matchFirstCase( m[1] , n );
+        var pre = s.substring(0,m.index);
+        var post = s.substring(m.index+len);
+        s = pre+n+post;
+      }else{
+        // no n found - fail
+        return null;
+      }
     }else{
       done = true;
     }
   }
   return s;
-}
-Generator.prototype.toString = function(){
-  if ( ! this.string ){
-    this.string = this.generate();
+};
+Instance.prototype.toString = function(){
+  if ( ! this.solved ){
+    this.solved = this.solve( this.s , "" );
   }
-  return this.string;
+  return this.solved;
 }
 
 function matchFirstCase( targetCase , source ){
