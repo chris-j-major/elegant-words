@@ -24,7 +24,7 @@ Instance.prototype.solve = function(k,trace){
   var key = k.toUpperCase();
   var n = this.model.fetch(key,this.random );
   // n is the array of possible solutions.
-  if ( n.length == 0 ){
+  if ( (!n) || (n.length == 0) ){
     this.warn("Unable to find any options for "+key+"   ["+trace+"]")
     return null;
   }else{
