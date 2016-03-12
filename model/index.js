@@ -31,7 +31,8 @@ Model.prototype.fetch = function(key){
   if ( typeof options == 'function' ){
     // function - execute it.
     options = options();
-  }else if ( options.push ){
+  }
+  if ( options.push ){
     return options;
   }else{
     return [options]; // convert to array
