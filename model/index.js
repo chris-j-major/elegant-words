@@ -32,6 +32,7 @@ Model.prototype.fetch = function(key){
     // function - execute it.
     options = options();
   }
+  if ( ! options ) return false;
   if ( options.push ){
     return options;
   }else{
