@@ -20,7 +20,7 @@ function Instance(gen,s){
   this.s = s;
   this.backrefs = {};
 }
-Instance.prototype.solve = function(k,trace){
+Instance.prototype.solve = function(k,trace,excludes){
   var key = k.toUpperCase();
   var n = this.model.fetch(key,this.random );
   // n is the array of possible solutions.
@@ -33,6 +33,9 @@ Instance.prototype.solve = function(k,trace){
     for ( var i=0 ; i< n.length ; i++){
       var index = (i+offset) % n.length;
       var s = this.unpack(n[index],trace+"->"+key+"("+index+")");
+      if ( excludes ){
+        if ( excludes.indexOf(s) != -1 ) s = null; // ignore any in the excludes list
+      }
       if ( s != null ) return s; // found a solution...
     }
     this.warn("Unable to find any VALID options for "+key+"   ["+trace+"]")
@@ -41,25 +44,37 @@ Instance.prototype.solve = function(k,trace){
 };
 Instance.prototype.unpack = function( s , trace ){
   var done = false;
-  var backrefId;
+  var backrefId = null;;
+  var refId = null;
   var n;
   var key;
+  var excludes = null;
   while( !done ){
     var m = re.exec(s);
     if ( m ){
       var len = m[0].length;
       n = null;
       backrefId = null;
+      key = m[1].toUpperCase();
+
       if ( m[2] ){
         // backref
-        backrefId = parseInt(m[2]);
+        refId = parseInt(m[2]);
+        backrefId = key+"-"+refId;
         if ( this.backrefs[backrefId] ){ // exists - shortcut exit
           n = this.backrefs[backrefId];
+        }else{
+          excludes = [];
+          for ( var index = 0 ; index< refId ; index++ ){
+            if ( this.backrefs[key+"-"+index] ){
+              excludes.push( this.backrefs[key+"-"+index] );
+            }
+          }
+          if ( excludes.length == 0 ) excludes = null;
         }
       }
       if ( !n ){
-        key = m[1].toUpperCase();
-        n = this.solve(key,trace);
+        n = this.solve(key,trace,excludes);
       }
       if ( n ){
         if ( backrefId){ // remeber it
