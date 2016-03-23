@@ -1,4 +1,4 @@
-var re = new RegExp("\\[([A-Za-z]+)([0-9]+)?\\]");
+var re = new RegExp("\\[([-A-Za-z]+)([0-9]+)?\\]");
 
 function Generator( model , opts ){
   this.model = model;
